@@ -22,6 +22,8 @@
 
 ;; Load Dracula theme
 (load-theme 'dracula t)
+
+;; Enable Dracula theme for GUI Emacs only
 (if (display-graphic-p)
     (enable-theme 'dracula)
   (disable-theme 'dracula))
@@ -31,6 +33,11 @@
 
 ;; Disable tool bar
 (tool-bar-mode -1)
+
+;; Disable menu bar in non-GUI Emacs
+;; Source: https://emacs.stackexchange.com/questions/29441/how-do-i-disable-menu-bar-mode-only-for-tty-frames
+(unless (display-graphic-p)
+  (menu-bar-mode -1))
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -81,22 +88,21 @@
 	      web-mode-attr-indent-offset 2))
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 
+;; custom-set-variables:
+;;  Put autosave files (#foo#) and backup files (foo~) in ~/.emacs.d/.
+;;  create the autosave dir if necessary, since emacs won't.
+;;  Source: https://snarfed.org/gnu_emacs_backup_files
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
- ;; Put autosave files (#foo#) and backup files (foo~) in ~/.emacs.d/.
- ;; Source: https://snarfed.org/gnu_emacs_backup_files
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
- ;; create the autosave dir if necessary, since emacs won't.
- (make-directory "~/.emacs.d/autosaves/" t)
- 
- '(custom-safe-themes
-   '(default))
- '(package-selected-packages '(markdown-mode groovy-mode web-mode)))
+ '(custom-safe-themes '(default))
+ '(nil nil t)
+ '(package-selected-packages '(racket-mode markdown-mode groovy-mode web-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
