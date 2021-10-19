@@ -42,6 +42,41 @@
 ;; Highlight current line
 (global-hl-line-mode t)
 
+;; Overwrite selected text
+;; Source: http://pragmaticemacs.com/emacs/overwrite-selected-text/
+(delete-selection-mode t)
+
+;; Change default typeface
+(set-face-attribute 'default nil
+		                :family "SF Mono"
+		                :height 160
+		                :weight 'normal
+		                :width 'normal)
+
+;; Add line numbers in programming modes
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; Scratch buffer defaults to org-mode with no message
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message "")
+
+;; Disable electric-indent in org-mode
+(add-hook 'org-mode-hook
+	        (lambda () (electric-indent-local-mode -1)))
+
+;; Indent using 2 spaces
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+
+;; Do not indent source blocks in org-mode
+(setq org-edit-src-content-indentation 0)
+
+;; css-mode setup
+(setq css-indent-offset 2)
+
+
+(delete-selection-mode t)
+
 ;; Change default typeface
 (set-face-attribute 'default nil
 		                :family "SF Mono"
@@ -101,8 +136,10 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(custom-safe-themes '(default))
+ '(groovy-indent-offset 2)
  '(nil nil t)
- '(package-selected-packages '(racket-mode markdown-mode groovy-mode web-mode)))
+ '(package-selected-packages
+   '(edit-indirect racket-mode markdown-mode groovy-mode web-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
