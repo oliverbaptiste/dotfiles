@@ -71,12 +71,6 @@
 ;; Do not indent source blocks in org-mode
 (setq org-edit-src-content-indentation 0)
 
-;; css-mode setup
-(setq css-indent-offset 2)
-
-
-(delete-selection-mode t)
-
 ;; Change default typeface
 (set-face-attribute 'default nil
 		                :family "SF Mono"
