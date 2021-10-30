@@ -17,6 +17,16 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+;; Packages I use:
+;; web-mode
+;; groovy-mode
+;; markdown-mode
+;; racket-mode
+;; edit-indirect
+;; dash (dependency)
+;; pos-tip (dependency)
+;; s (dependency)
+
 ;; Load themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
