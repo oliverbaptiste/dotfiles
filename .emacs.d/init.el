@@ -63,30 +63,8 @@
 		                :weight 'normal
 		                :width 'normal)
 
-;; Add line numbers in programming modes
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
-;; Scratch buffer defaults to org-mode with no message
-(setq initial-major-mode 'org-mode)
-(setq initial-scratch-message "")
-
-;; Disable electric-indent in org-mode
-(add-hook 'org-mode-hook
-	        (lambda () (electric-indent-local-mode -1)))
-
-;; Indent using 2 spaces
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-
-;; Do not indent source blocks in org-mode
-(setq org-edit-src-content-indentation 0)
-
-;; Change default typeface
-(set-face-attribute 'default nil
-		                :family "SF Mono"
-		                :height 160
-		                :weight 'normal
-		                :width 'normal)
+;; Enable Org Markdown export
+(require 'ox-md)
 
 ;; Add line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
