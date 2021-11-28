@@ -59,7 +59,7 @@
 ;; Change default typeface
 (set-face-attribute 'default nil
 		                :family "SF Mono"
-		                :height 160
+		                :height 120
 		                :weight 'normal
 		                :width 'normal)
 
