@@ -1,3 +1,10 @@
+;; Default typeface
+(set-face-attribute 'default nil
+		    :family "SF Mono"
+		    :height 180
+		    :weight 'normal
+		    :width 'normal)
+
 ;; Mac keybindings
 (cond ((eq system-type 'darwin)
        (setq mac-command-modifier 'super
@@ -13,19 +20,23 @@
        (global-set-key (kbd "s-s") (kbd "C-x C-s")) ;; Save
        ))
 
-;; Set up package system and add MELPA repository
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; Scratch buffer defaults to org-mode with no message
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message "")
 
-;; Packages I use:
-;; web-mode
-;; groovy-mode
-;; markdown-mode
-;; racket-mode
-;; edit-indirect
-;; dash (dependency)
-;; pos-tip (dependency)
-;; s (dependency)
+;; Use MELPA for package archive
+(package-initialize)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/"))
+
+;; Make sure that use-package is loaded
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; Move all custom-* stuff into custom-file.el.
+;; Do not put them in init.el.
+(setq custom-file "~/.emacs.d/custom-file.el")
 
 ;; Load themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -56,77 +67,30 @@
 ;; Source: http://pragmaticemacs.com/emacs/overwrite-selected-text/
 (delete-selection-mode t)
 
-;; Change default typeface
-(set-face-attribute 'default nil
-		                :family "SF Mono"
-		                :height 120
-		                :weight 'normal
-		                :width 'normal)
-
-;; Enable Org Markdown export
-(require 'ox-md)
-
 ;; Add line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-;; Scratch buffer defaults to org-mode with no message
-(setq initial-major-mode 'org-mode)
-(setq initial-scratch-message "")
+;; PACKAGES
+(use-package groovy-mode
+  :ensure t)
 
-;; Disable electric-indent in org-mode
-(add-hook 'org-mode-hook
-	        (lambda () (electric-indent-local-mode -1)))
+(use-package web-mode
+  :ensure t
+  :mode
+  (
+   ".html?$"
+   )
+  :config
+  (setq
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-code-indent-offset 2
+   web-mode-attr-indent-offset 2
+   web-mode-style-padding 0
+   web-mode-script-padding 0
+   web-mode-offsetless-elements '("html" "head" "body" "script")
+   web-mode-attr-indent-offset 2))
 
-;; Indent using 2 spaces
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
+(use-package markdown-mode
+  :ensure t)
 
-;; Do not indent source blocks in org-mode
-(setq org-edit-src-content-indentation 0)
-
-;; css-mode setup
-(setq css-indent-offset 2)
-
-;; js-mode setup
-(setq js-indent-level 2)
-
-;; web-mode setup
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(defun my-web-mode-hook ()
-  "Hooks for web-mode."
-  (setq web-mode-markup-indent-offset 2
-	      web-mode-css-indent-offset 2
-	      web-mode-code-indent-offset 2
-        web-mode-attr-indent-offset 2
-	      web-mode-offsetless-elements '("html" "head" "body" "script")
-	      web-mode-style-padding 0
-	      web-mode-script-padding 0
-	      web-mode-attr-indent-offset 2))
-(add-hook 'web-mode-hook 'my-web-mode-hook)
-
-;; custom-set-variables:
-;;  Put autosave files (#foo#) and backup files (foo~) in ~/.emacs.d/.
-;;  create the autosave dir if necessary, since emacs won't.
-;;  Source: https://snarfed.org/gnu_emacs_backup_files
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
- '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
- '(custom-safe-themes '(default))
- '(groovy-indent-offset 2)
- '(nil nil t)
- '(package-selected-packages
-   '(edit-indirect racket-mode markdown-mode groovy-mode web-mode)))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-(put 'downcase-region 'disabled nil)
