@@ -38,6 +38,13 @@
 ;; Do not put them in init.el.
 (setq custom-file "~/.emacs.d/custom-file.el")
 
+;; Prevent autosave mess
+;; Source: https://www.victorquinn.com/emacs-prevent-autosave-mess
+(setq auto-save-file-name-transforms
+      `((".*" "~/.emacs.d/autosaves/\\1" t)))
+(setq backup-directory-alist
+      `((".*" . "~/.emacs.d/backups/")))
+
 ;; Load themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
