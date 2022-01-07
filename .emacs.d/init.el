@@ -77,8 +77,44 @@
 ;; Add line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
+;; START TABS CONFIG
+;; Source: https://dougie.io/emacs/indentation/
+
+;; Create a variable for our preferred tab width
+(setq custom-tab-width 2)
+
+;; Two callable functions for enabling/disabling tabs in Emacs
+(defun disable-tabs () (setq indent-tabs-mode nil))
+(defun enable-tabs ()
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  (setq indent-tabs-mode t)
+  (setq tab-width custom-tabs-width))
+
+;; Hooks to Disable Tabs in programming modes
+(add-hook 'prog-mode-hook 'disable-tabs)
+
+;; Disable electric-indent in org-mode
+(add-hook 'org-mode-hook
+	  (lambda () (electric-indent-local-mode -1)))
+
+;; Making electric-indent behave sanely 
+(setq-default electric-indent-inhibit t)
+
+;; Make the backspace properly erase the tab instead of
+;; removing 1 space at a time.
+(setq backward-delete-char-untabify-method 'hungry)
+
+;; Do not indent source blocks in org-mode
+(setq org-edit-src-content-indentation 0)
+
 ;; PACKAGES
 (use-package groovy-mode
+  :ensure t)
+
+(use-package markdown-mode
+  :ensure t)
+
+(use-package php-mode
   :ensure t)
 
 (use-package web-mode
@@ -89,16 +125,11 @@
    )
   :config
   (setq
-;; web-mode-markup-indent-offset 2
-;; web-mode-css-indent-offset 2
-;; web-mode-code-indent-offset 2
-;; web-mode-attr-indent-offset 2
-   web-mode-style-padding 0
-   web-mode-script-padding 0
+   web-mode-attr-indent-offset custom-tab-width
+   web-mode-css-indent-offset custom-tab-width
+   web-mode-code-indent-offset custom-tab-width
+   web-mode-markup-indent-offset custom-tab-width
    web-mode-offsetless-elements '("html" "head" "body" "script")
-;; web-mode-attr-indent-offset 2
+   web-mode-script-padding 0
+   web-mode-style-padding 0
    ))
-
-(use-package markdown-mode
-  :ensure t)
-
