@@ -1,9 +1,9 @@
 ;; Default typeface
 (set-face-attribute 'default nil
-		    :family "SF Mono"
-		    :height 180
-		    :weight 'normal
-		    :width 'normal)
+                    :family "SF Mono"
+                    :height 150
+                    :weight 'normal
+                    :width 'normal)
 
 ;; Mac keybindings
 (cond ((eq system-type 'darwin)
@@ -84,11 +84,13 @@
 (setq custom-tab-width 2)
 
 ;; Two callable functions for enabling/disabling tabs in Emacs
-(defun disable-tabs () (setq indent-tabs-mode nil))
+(defun disable-tabs ()
+  (setq indent-tabs-mode nil)
+  (setq tab-width custom-tab-width))
 (defun enable-tabs ()
   (local-set-key (kbd "TAB") 'tab-to-tab-stop)
   (setq indent-tabs-mode t)
-  (setq tab-width custom-tabs-width))
+  (setq tab-width custom-tab-width))
 
 ;; Hooks to Disable Tabs in programming modes
 (add-hook 'prog-mode-hook 'disable-tabs)
@@ -97,7 +99,7 @@
 (add-hook 'org-mode-hook
 	  (lambda () (electric-indent-local-mode -1)))
 
-;; Making electric-indent behave sanely 
+;; Making electric-indent behave sanely
 (setq-default electric-indent-inhibit t)
 
 ;; Make the backspace properly erase the tab instead of
@@ -114,7 +116,13 @@
 (use-package markdown-mode
   :ensure t)
 
+(use-package edit-indirect
+  :ensure t)
+
 (use-package php-mode
+  :ensure t)
+
+(use-package sml-mode
   :ensure t)
 
 (use-package web-mode
