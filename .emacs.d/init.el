@@ -1,7 +1,7 @@
 ;; Default typeface
 (set-face-attribute 'default nil
                     :family "SF Mono"
-                    :height 150
+                    :height 160
                     :weight 'normal
                     :width 'normal)
 
@@ -110,7 +110,13 @@
 (setq org-edit-src-content-indentation 0)
 
 ;; PACKAGES
+(use-package elpher
+  :ensure t)
+
 (use-package groovy-mode
+  :ensure t)
+
+(use-package magit
   :ensure t)
 
 (use-package markdown-mode
@@ -120,6 +126,9 @@
   :ensure t)
 
 (use-package php-mode
+  :ensure t)
+
+(use-package racket-mode
   :ensure t)
 
 (use-package sml-mode
