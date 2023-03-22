@@ -1,4 +1,5 @@
-source ~/.profile
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # aliases
 alias ls="ls -FG"
 alias ll="ls -lh"
@@ -18,7 +19,7 @@ fi
 # 2-line custom prompt:
 # - [current working directory] (git branch if applicable)
 # - username@hostname $
-export PS1="$(tput bold)[\w]\$(tput sgr0)\$(__git_ps1)\n\u@\h $ "
+# export PS1="$(tput bold)[\w]\$(tput sgr0)\$(__git_ps1)\n\u@\h $ "
 
 # iTerm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash";
