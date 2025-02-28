@@ -1,6 +1,22 @@
-;; Move all custom-* stuff into custom-file.el.
-;; Do not put them in init.el.
-(setq custom-file "~/.emacs.d/custom-file.el")
+;; Mac keybindings
+(cond ((eq system-type 'darwin)
+       (setq mac-command-modifier 'super
+	     mac-option-modifier 'meta)
+       (global-set-key (kbd "s--") (kbd "C-x C--")) ;; Decrease font size
+       (global-set-key (kbd "s-=") (kbd "C-x C-=")) ;; Increase font size
+       (global-set-key (kbd "s-0") (kbd "C-x C-0")) ;; Reset font size
+       (global-set-key (kbd "s-z") (kbd "C-/")) ;; Undo
+       (global-set-key (kbd "s-x") (kbd "C-w")) ;; Cut
+       (global-set-key (kbd "s-c") (kbd "M-w")) ;; Copy
+       (global-set-key (kbd "s-v") (kbd "C-y")) ;; Paste
+       (global-set-key (kbd "s-a") (kbd "C-x h")) ;; Select All
+       (global-set-key (kbd "s-s") (kbd "C-x C-s")) ;; Save
+ ))
+
+;; Store automatic customisation options elsewhere
+(setq custom-file (locate-user-emacs-file "custom-file.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;; Prevent autosave mess
 (make-directory "~/.emacs.d/autosaves/" t)
@@ -9,15 +25,15 @@
 (setq backup-directory-alist
       `((".*" . "~/.emacs.d/backups/")))
 
-;; Enable a color theme
-(load-theme 'modus-operandi) ;; Light mode
-;; (load-theme 'modus-vivendi) ;; Dark mode
+;; Set default font
+(set-face-attribute 'default nil
+		    :family "JetBrains Mono"
+		    :height 130
+		    :weight 'normal
+		    :width 'normal)
 
 ;; Don't show the startup screen
 (setq inhibit-startup-message t)
-
-;; Disable tool bar
-(tool-bar-mode -1)
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -28,35 +44,23 @@
 ;; Display line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-(defun system-has-gls ()
-  "Check if the system has 'gls' installed."
-  (stringp (shell-command-to-string "command -v gls")))
-
-(when (eq system-type 'darwin) ;; Check if on macOS (Darwin)
-  (if (system-has-gls)
-      ;; If 'gls' is available, use it for dired listing
-      (setq insert-directory-program "gls"
-            dired-listing-switches "-al --group-directories-first")
-    ;; If 'gls' is not available, disable 'ls-lisp' for dired listing
-    (setq dired-use-ls-dired nil)))
-
 ;; PACKAGE INSTALLATION SETUP
-;; Source: https://stackoverflow.com/questions/55038594/setting-up-emacs-on-new-machine-with-init-el-and-package-installation
+
+;; Initialize package.el
+(require 'package)
 
 ;; Declare package repos
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")))
 
-;; Initialize package.el
-(require 'package)
-(package-initialize)
-(package-refresh-contents) ;; After first run, comment out this line
-
 ;; Declare packages
 (setq my-packages
       '(edit-indirect
+	editorconfig
+	elpher
 	groovy-mode
+	magit
 	markdown-mode
 	web-mode))
 
@@ -64,3 +68,10 @@
 (dolist (pkg my-packages)
   (unless (package-installed-p pkg)
     (package-install pkg)))
+
+;; Load color theme if using Emacs GUI
+(if (display-graphic-p)
+    (load-theme 'modus-operandi t))
+
+;; Enable EditorConfig
+(editorconfig-mode t)
