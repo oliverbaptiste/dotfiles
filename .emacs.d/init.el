@@ -25,24 +25,20 @@
 (setq backup-directory-alist
       `((".*" . "~/.emacs.d/backups/")))
 
-;; Set default font
-(set-face-attribute 'default nil
-		    :family "JetBrains Mono"
-		    :height 130
-		    :weight 'normal
-		    :width 'normal)
-
 ;; Don't show the startup screen
 (setq inhibit-startup-message t)
-
-;; Highlight current line
-(global-hl-line-mode t)
 
 ;; Overwrite selected text
 (delete-selection-mode t)
 
 ;; Display line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; GUI EMACS ENHANCEMENTS
+(if (display-graphic-p) ;; if using GUI Emacs
+    (global-hl-line-mode t)) ;; Highlight current line
+(if (display-graphic-p) ;; If using GUI Emacs
+    (load-theme 'modus-operandi t)) ;; Load Emacs 28+ Modus theme
 
 ;; PACKAGE INSTALLATION SETUP
 
@@ -65,13 +61,9 @@
 	web-mode))
 
 ;; Install packages
-(dolist (pkg my-packages)
-  (unless (package-installed-p pkg)
-    (package-install pkg)))
-
-;; Load color theme if using Emacs GUI
-(if (display-graphic-p)
-    (load-theme 'modus-operandi t))
+;; (dolist (pkg my-packages)
+;;   (unless (package-installed-p pkg)
+;;     (package-install pkg)))
 
 ;; Enable EditorConfig
 (editorconfig-mode t)
