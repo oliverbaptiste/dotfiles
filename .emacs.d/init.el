@@ -47,23 +47,25 @@
 
 ;; Declare package repos
 (setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.org/packages/")))
+      '(("GNU ELPA"     . "https://elpa.gnu.org/packages/")
+        ("MELPA Stable" . "https://stable.melpa.org/packages/")
+        ("MELPA"        . "https://melpa.org/packages/")))
+(package-initialize)
 
 ;; Declare packages
 (setq my-packages
       '(edit-indirect
-	editorconfig
-	elpher
-	groovy-mode
-	magit
-	markdown-mode
-	web-mode))
+    	editorconfig
+	    elpher
+	    groovy-mode
+	    magit
+	    markdown-mode
+	    web-mode))
 
 ;; Install packages
-;; (dolist (pkg my-packages)
-;;   (unless (package-installed-p pkg)
-;;     (package-install pkg)))
+(dolist (pkg my-packages)
+  (unless (package-installed-p pkg)
+    (package-install pkg)))
 
 ;; Enable EditorConfig
 (editorconfig-mode t)
