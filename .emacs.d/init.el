@@ -10,6 +10,15 @@
 (setq backup-directory-alist
       `((".*" . "~/.emacs.d/backups/")))
 
+;; Automatically reread from disk if the underlying file changes
+(setopt auto-revert-avoid-polling t)
+(setopt auto-revert-interval 5)
+(setopt auto-revert-check-vc-info t)
+(global-auto-revert-mode)
+
+;; Load Emacs 28+ Modus theme
+(load-theme 'modus-operandi t)
+
 ;; Don't show the startup screen
 (setq inhibit-startup-message t)
 
@@ -19,36 +28,118 @@
 ;; Display line numbers in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-(load-theme 'modus-operandi t) ;; Load Emacs 28+ Modus theme
 (global-hl-line-mode t) ;; Highlight current line
 
-;; PACKAGE INSTALLATION SETUP
+;; Make right-click do something sensible
+(when (display-graphic-p)
+  (context-menu-mode))
 
-;; Initialize package.el
-(require 'package)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+  
+(straight-use-package 'use-package)
 
-;; Declare package repos
-(setq package-archives
-      '(("GNU ELPA"     . "https://elpa.gnu.org/packages/")
-        ("MELPA Stable" . "https://stable.melpa.org/packages/")
-        ("MELPA"        . "https://melpa.org/packages/")))
-(package-initialize)
+(use-package company
+  :straight t
+  ;; Navigate in completion minibuffer with `C-n` and `C-p`.
+  :bind (:map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :config
+  ;; Provide instant autocompletion.
+  (setq company-idle-delay 0.3)
 
-;; Declare packages
-(setq my-packages
-      '(edit-indirect
-	editorconfig
-	groovy-mode
-	magit
-	markdown-mode
-	racket-mode
-	sml-mode
-	web-mode))
+  ;; Use company mode everywhere.
+  (global-company-mode t))
 
-;; Install packages
-(dolist (pkg my-packages)
-  (unless (package-installed-p pkg)
-    (package-install pkg)))
+;; Display possible completions at all places
+(use-package ido-completing-read+
+  :straight t
+  :config
+  ;; This enables ido in all contexts where it could be useful, not just
+  ;; for selecting buffer and file names
+  (ido-mode t)
+  (ido-everywhere t)
+  ;; This allows partial matches, e.g. "uzh" will match "Ustad Zakir Hussain"
+  (setq ido-enable-flex-matching t)
+  (setq ido-use-filename-at-point nil)
+  ;; Includes buffer names of recently opened files, even if they're not open now.
+  (setq ido-use-virtual-buffers t)
+  :diminish nil)
 
-;; Enable EditorConfig
-(editorconfig-mode t)
+;; Enhance M-x to allow easier execution of commands
+(use-package smex
+  :straight t
+  ;; Using counsel-M-x for now. Remove this permanently if counsel-M-x works better.
+  :disabled t
+  :config
+  (setq smex-save-file (concat user-emacs-directory ".smex-items"))
+  (smex-initialize)
+  :bind ("M-x" . smex))
+
+(use-package edit-indirect
+  :straight t)
+  
+(use-package editorconfig
+  :straight t
+  :config
+  (editorconfig-mode 1))
+
+(use-package go-mode
+  :straight t
+  :mode
+  (("\\.go\\'" . go-mode)))
+
+(use-package groovy-mode
+  :straight t)
+
+(use-package magit
+  :straight t
+  :bind ("C-x g" . magit-status))
+
+(use-package markdown-mode
+  :straight t
+  :commands (markdown-mode gfm-mode)
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode)))
+
+(use-package pandoc-mode
+  :straight t)
+  
+(use-package racket-mode
+  :straight t)
+
+(use-package sml-mode
+  :straight t)
+  
+(use-package web-mode
+  :straight t
+  :mode
+  (("\\.phtml\\'" . web-mode)
+   ("\\.php\\'" . web-mode)
+   ("\\.tpl\\'" . web-mode)
+   ("\\.[agj]sp\\'" . web-mode)
+   ("\\.as[cp]x\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.djhtml\\'" . web-mode)))
+
+(use-package which-key
+  :straight t
+  :config
+  (which-key-mode))
