@@ -1,34 +1,71 @@
-;; Store automatic customization options elsewhere
-(setq custom-file (locate-user-emacs-file "custom-file.el"))
+;; -*- lexical-binding: t; -*-
+
+;; Store customization options in a separate file
+(setq custom-file
+      (locate-user-emacs-file "custom-file.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
 
-;; Prevent autosave mess
+;; Organize auto-save & backup files
 (make-directory "~/.emacs.d/autosaves/" t)
 (setq auto-save-file-name-transforms
       `((".*" "~/.emacs.d/autosaves/\\1" t)))
 (setq backup-directory-alist
       `((".*" . "~/.emacs.d/backups/")))
 
-;; Don't show the startup screen
+;; Don't show startup screen
 (setq inhibit-startup-message t)
 
-;; On graphical display
-(if (display-graphic-p)
-    (load-theme 'modus-operandi) ;; default to light theme 
-  ;; On text terminal
-  (load-theme 'modus-vivendi) ;; default to dark theme
-  (menu-bar-mode -1)) ;; and hide menu bar
-
-;; Overwrite selected text
-(delete-selection-mode t)
+(load-theme 'newcomers-presets t)
 
 ;; Highlight current line
 (global-hl-line-mode t)
 
-;; Enable which-key
-(which-key-mode t)           
+;; Install and set up packages
+(require 'package)
+(package-initialize)
 
-;; Display line numbers in programming modes
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;; On graphical display
+(if (display-graphic-p)
+    (progn
+      ;; Show menu bar
+      (menu-bar-mode 1)
+      ;; Use light theme
+      (load-theme 'modus-operandi t))
+  ;; In text terminal
+  (progn
+    ;; Hide menu bar
+    (menu-bar-mode -1)
+    ;; Use dark theme
+    (use-package dracula-theme
+      :ensure t
+      :config
+      (load-theme 'dracula t))))
+
+(use-package edit-indirect
+  :ensure t)
+
+(use-package markdown-ts-mode
+  :ensure nil
+  :mode ("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'"))
+              
+(use-package sml-mode
+  :ensure t
+  :mode ("\\.sml\\'" . sml-mode))
+
+(use-package racket-mode
+  :ensure t
+  :mode ("\\.rkt\\'" . racket-mode))
+
+(use-package web-mode
+  :ensure t
+  :mode
+  (("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.html?\\'" . web-mode)
+   ("\\.php\\'" . web-mode)
+   ("\\.vue\\'" . web-mode)))
+
+(provide 'init)
+;;; init.el ends here
 
