@@ -1,4 +1,4 @@
-;;; init.el --- Emacs settings for ogab@ogab-air-15.local -*- lexical-binding: t; -*-
+;;; early-init.el --- Emacs settings for ogab@ogab-air-15.local -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -26,6 +26,9 @@
 (global-hl-line-mode t)
 
 (require 'package)
+(add-to-list
+	'package-archives
+	'("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (use-package edit-indirect
@@ -40,9 +43,8 @@
   :bind (:map markdown-mode-map
               ("C-c C-e" . markdown-do)))
 
-(use-package sml-mode
-  :ensure t
-  :mode ("\\.sml\\'" . sml-mode))
+(use-package ghostel
+  :ensure t)
 
 (provide 'init)
 ;;; init.el ends here
